@@ -42,7 +42,7 @@ interface MapPin {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
 
           <!-- ── World Map Panel ── -->
-          <div class="relative bg-[#020e22] border border-white/10 rounded-[24px] md:rounded-[28px] overflow-hidden shadow-2xl aspect-square flex items-center justify-center">
+          <div class="lg:col-span-2 relative bg-[#020e22] border border-white/10 rounded-[24px] md:rounded-[28px] overflow-hidden shadow-2xl aspect-square flex items-center justify-center">
 
             <!-- High-resolution generated luxury world map background -->
             <img src="/images/world_map.png" 
