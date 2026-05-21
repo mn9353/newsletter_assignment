@@ -1,6 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+interface MapPinFact {
+  icon: string;
+  label: string;
+  value: string;
+}
+
 interface MapPin {
   id: string;
   name: string;
@@ -15,6 +21,7 @@ interface MapPin {
   arcColor: string;
   controlX: number;
   controlY: number;
+  facts: MapPinFact[];
 }
 
 @Component({
@@ -134,7 +141,8 @@ interface MapPin {
 
             <!-- Mobile Glassmorphic Floating Panel Overlay (Visible on mobile/tablet screens only) -->
             <div *ngIf="activePin() as pin" 
-                 class="absolute bottom-3 left-3 right-3 bg-[#0b1f3a]/90 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-xl z-20 lg:hidden block animate-fade-in-up">
+                 (click)="scrollToDetails()"
+                 class="absolute bottom-3 left-3 right-3 bg-[#0b1f3a]/90 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-xl z-20 lg:hidden block animate-fade-in-up cursor-pointer hover:bg-[#0b1f3a]/95 transition-all duration-300">
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-3">
                   <span class="text-3xl leading-none">{{pin.flag}}</span>
@@ -143,10 +151,10 @@ interface MapPin {
                     <p class="text-[9px] text-[#ffe088] font-sans font-bold uppercase tracking-wider mt-0.5">{{pin.status}}</p>
                   </div>
                 </div>
-                <!-- Mini info display -->
-                <div class="text-right border-l border-white/10 pl-3">
-                  <span class="text-[8px] text-[#7587a7] uppercase tracking-wider font-bold block">Stay Limit</span>
-                  <span class="text-[11px] text-white font-semibold whitespace-nowrap block">{{pin.stay.split(' per ')[0]}}</span>
+                <!-- Interactive View Specs indicator -->
+                <div class="text-right border-l border-white/10 pl-3 flex items-center gap-1.5 text-[#ffe088]">
+                  <span class="text-[9px] font-extrabold uppercase tracking-widest whitespace-nowrap">View Specs</span>
+                  <span class="material-symbols-outlined text-xs animate-bounce">arrow_downward</span>
                 </div>
               </div>
             </div>
@@ -170,7 +178,7 @@ interface MapPin {
           </div>
 
           <!-- ── Info Side Panel (Hidden on mobile map, but full detail displays underneath) ── -->
-          <div class="bg-white/5 border border-white/10 rounded-[24px] md:rounded-[28px] p-5 md:p-7 backdrop-blur-xl shadow-2xl flex flex-col justify-between h-full min-h-[350px] lg:min-h-0">
+          <div id="details-card" class="bg-white/5 border border-white/10 rounded-[24px] md:rounded-[28px] p-5 md:p-7 backdrop-blur-xl shadow-2xl flex flex-col justify-between h-full min-h-[350px] lg:min-h-0">
             <div *ngIf="activePin() as pin; else placeholder" class="flex-1 flex flex-col justify-between">
               <div>
                 <!-- Flag + Name -->
@@ -194,7 +202,7 @@ interface MapPin {
                 </div>
 
                 <!-- Strategic Value block -->
-                <div class="flex gap-3.5 items-start mb-6 md:mb-8">
+                <div class="flex gap-3.5 items-start mb-6 md:mb-5">
                   <div class="w-9 h-9 rounded-xl bg-[#ffe088]/10 flex items-center justify-center text-[#ffe088] shrink-0">
                     <span class="material-symbols-outlined text-base">verified_user</span>
                   </div>
@@ -203,10 +211,24 @@ interface MapPin {
                     <p class="text-white text-xs leading-relaxed font-sans opacity-90">{{pin.details}}</p>
                   </div>
                 </div>
+
+                <!-- CBI Strategic Parameters (Laptop/Desktop Only - Fills vertical spacing cleanly) -->
+                <div class="hidden lg:block border-t border-white/10 pt-5 mt-5">
+                  <h5 class="text-[9px] text-[#ffe088] uppercase tracking-widest font-bold mb-3">CBI Strategic Facts</h5>
+                  <div class="grid grid-cols-2 gap-2.5">
+                    <div *ngFor="let fact of pin.facts" class="bg-white/[0.02] border border-white/5 rounded-xl p-2 md:p-2.5 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-[#ffe088] text-sm shrink-0">{{fact.icon}}</span>
+                      <div class="min-w-0">
+                        <span class="text-[8px] text-[#7587a7] block uppercase tracking-wide font-bold">{{fact.label}}</span>
+                        <span class="text-[9.5px] text-white font-bold block truncate mt-0.5">{{fact.value}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- CTA Button -->
-              <button class="w-full py-3.5 bg-[#cca830] hover:bg-[#ffe088] text-[#241a00] font-bold rounded-xl text-xs tracking-wider transition-all duration-300 hover:scale-[1.02] shadow-lg mb-4">
+              <button class="w-full py-3.5 bg-[#cca830] hover:bg-[#ffe088] text-[#241a00] font-bold rounded-xl text-xs tracking-wider transition-all duration-300 hover:scale-[1.02] shadow-lg mb-4 mt-6">
                 Check Access Rules
               </button>
             </div>
@@ -302,7 +324,13 @@ export class InteractiveMapComponent {
       flag: '🇬🇧',
       arcColor: '#a0befe',
       controlX: 33.0,
-      controlY: 35.0
+      controlY: 35.0,
+      facts: [
+        { icon: 'business_center', label: 'Travel Purpose', value: 'Trade, Meetings' },
+        { icon: 'description', label: 'Visa Class', value: 'Direct Waiver' },
+        { icon: 'flight_takeoff', label: 'Connections', value: 'Direct Flight' },
+        { icon: 'account_balance', label: 'Hub Strength', value: 'World Elite' }
+      ]
     },
     {
       id: 'schengen',
@@ -316,7 +344,13 @@ export class InteractiveMapComponent {
       flag: '🇪🇺',
       arcColor: '#93c5fd',
       controlX: 35.0,
-      controlY: 37.0
+      controlY: 37.0,
+      facts: [
+        { icon: 'language', label: 'Nations Covered', value: '27 EU States' },
+        { icon: 'security', label: 'Agreement Code', value: 'Annex II Waived' },
+        { icon: 'hub', label: 'Transit Core', value: 'Frankfurt/CDG' },
+        { icon: 'star', label: 'Value Score', value: 'Platinum tier' }
+      ]
     },
     {
       id: 'uae',
@@ -330,7 +364,13 @@ export class InteractiveMapComponent {
       flag: '🇦🇪',
       arcColor: '#86efac',
       controlX: 42.0,
-      controlY: 40.0
+      controlY: 40.0,
+      facts: [
+        { icon: 'currency_exchange', label: 'Asset Access', value: 'Dubai/Abu Dhabi' },
+        { icon: 'speed', label: 'VoA Approval', value: 'Instant Entry' },
+        { icon: 'rocket_launch', label: 'Growth Hub', value: 'Silicon Oasis' },
+        { icon: 'workspace_premium', label: 'Status Tier', value: 'Premium e-Visa' }
+      ]
     },
     {
       id: 'hk',
@@ -344,7 +384,13 @@ export class InteractiveMapComponent {
       flag: '🇭🇰',
       arcColor: '#fcd34d',
       controlX: 51.0,
-      controlY: 30.0
+      controlY: 30.0,
+      facts: [
+        { icon: 'trending_up', label: 'Market Gateway', value: 'Far East Trade' },
+        { icon: 'article', label: 'Entry Code', value: 'Exemption Agrm.' },
+        { icon: 'local_airport', label: 'Transit Core', value: 'Chek Lap Kok' },
+        { icon: 'wallet', label: 'Diversification', value: 'Dual Asset Base' }
+      ]
     },
     {
       id: 'singapore',
@@ -358,7 +404,13 @@ export class InteractiveMapComponent {
       flag: '🇸🇬',
       arcColor: '#f9a8d4',
       controlX: 49.0,
-      controlY: 42.0
+      controlY: 42.0,
+      facts: [
+        { icon: 'account_balance_wallet', label: 'Family Office', value: 'Changi Wealth' },
+        { icon: 'assignment_turned_in', label: 'Stay Code', value: '30-Day Short Stay' },
+        { icon: 'apartment', label: 'HQ Base', value: 'Marina Bay Core' },
+        { icon: 'verified', label: 'Bank Check', value: 'Secure Asset' }
+      ]
     }
   ];
 
@@ -370,5 +422,12 @@ export class InteractiveMapComponent {
 
   protected hoverPin(pin: MapPin) {
     this.activePin.set(pin);
+  }
+
+  protected scrollToDetails() {
+    const element = document.getElementById('details-card');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   }
 }
