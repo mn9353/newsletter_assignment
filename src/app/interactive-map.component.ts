@@ -173,32 +173,32 @@ interface MapPin {
           <div class="bg-white/5 border border-white/10 rounded-[24px] md:rounded-[28px] p-5 md:p-7 backdrop-blur-xl shadow-2xl flex flex-col justify-between h-full min-h-[350px] lg:min-h-0">
             <div *ngIf="activePin() as pin; else placeholder" class="flex-1 flex flex-col justify-between">
               <div>
-                <!-- Flag + Name (Fixed height to prevent shift) -->
-                <div class="flex items-center gap-3.5 mb-5 md:mb-6 h-[48px] md:h-[56px] overflow-hidden">
+                <!-- Flag + Name -->
+                <div class="flex items-center gap-3.5 mb-5 md:mb-6">
                   <span class="text-4xl leading-none">{{pin.flag}}</span>
                   <div>
-                    <h4 class="text-lg md:text-xl font-display font-semibold text-white leading-tight truncate">{{pin.name}}</h4>
+                    <h4 class="text-lg md:text-xl font-display font-semibold text-white leading-tight">{{pin.name}}</h4>
                     <span class="text-[10px] text-[#ffe088] font-sans tracking-wider uppercase font-bold">{{pin.status}}</span>
                   </div>
                 </div>
 
-                <!-- Stay block (Fixed height to prevent shift) -->
-                <div class="flex gap-3.5 items-start mb-4 md:mb-5 h-[40px] overflow-hidden">
+                <!-- Stay block -->
+                <div class="flex gap-3.5 items-start mb-4 md:mb-5">
                   <div class="w-9 h-9 rounded-xl bg-[#ffe088]/10 flex items-center justify-center text-[#ffe088] shrink-0">
                     <span class="material-symbols-outlined text-base">{{pin.icon}}</span>
                   </div>
                   <div>
                     <h5 class="text-[9px] text-[#7587a7] uppercase tracking-wider font-bold mb-0.5">Allowed Stay</h5>
-                    <p class="text-white text-sm font-semibold truncate">{{pin.stay}}</p>
+                    <p class="text-white text-sm font-semibold">{{pin.stay}}</p>
                   </div>
                 </div>
 
-                <!-- Strategic Value block (Fixed height with scrolling to prevent shift) -->
+                <!-- Strategic Value block -->
                 <div class="flex gap-3.5 items-start mb-6 md:mb-8">
                   <div class="w-9 h-9 rounded-xl bg-[#ffe088]/10 flex items-center justify-center text-[#ffe088] shrink-0">
                     <span class="material-symbols-outlined text-base">verified_user</span>
                   </div>
-                  <div class="h-[76px] lg:h-[84px] overflow-y-auto pr-1 flex-1">
+                  <div class="flex-1">
                     <h5 class="text-[9px] text-[#7587a7] uppercase tracking-wider font-bold mb-0.5">Strategic Value</h5>
                     <p class="text-white text-xs leading-relaxed font-sans opacity-90">{{pin.details}}</p>
                   </div>
